@@ -19,7 +19,7 @@ class Piece_manager:
     @classmethod
     def init(cls):
         '''
-        Opening and cropping as well as resizing of the image, such that 
+        Opening and cropping as well as resizing of the image, such that
         chess pieces can be placed on frames
         '''
         fullimg = Image.open('resources/pieces2.png')
@@ -29,9 +29,14 @@ class Piece_manager:
         cls.pieces_pre = [fullimg for _ in Pieces]
         cls.pieces = {}
         for i, piece in enumerate(Pieces):
-            s = len(Pieces)/2
+            s = len(Pieces) / 2
 
-            crop_shape = (334*(i%s), 334*(i//s), 334*(i%s+1), 334*(i//s + 1))
+            crop_shape = (
+                334 * (i % s),
+                334 * (i // s),
+                334 * (i % s + 1),
+                334 * (i // s + 1)
+            )
 
             cls.pieces_pre[i] = fullimg.crop(crop_shape)
             cls.pieces_pre[i] = cls.pieces_pre[i].resize((100, 100))
@@ -44,7 +49,7 @@ class Piece_manager:
         If necessary loads the PhotoImage of the Piece
         PhotoImage apparently needs an active tkinter main loop.
         '''
-        if not piece.name in cls.pieces:
+        if piece.name not in cls.pieces:
             cls.pieces[piece.name] = ImageTk.PhotoImage(cls.pieces_pre[piece.value])
         return cls.pieces[piece.name]
 
@@ -59,7 +64,6 @@ class Piece_manager:
         img = cls.get_img(piece)
 
         color = (ttk.Style().lookup((frame)['style'], 'background'))
-        tk.Label(frame, bg = color, image=img, relief='flat', borderwidth=0).pack()
+        tk.Label(frame, bg=color, image=img, relief='flat', borderwidth=0).pack()
 
     # staticmethod
-
