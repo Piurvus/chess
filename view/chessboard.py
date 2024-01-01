@@ -1,10 +1,9 @@
 import tkinter as tk
-from tkinter import CENTER, ttk
+from tkinter import ttk
 from tkinter import font as tkfont
 
-from PIL import Image, ImageTk
-
-
+from view.piece_manager import Piece_manager
+from model.pieces import Pieces
 
 class ChessBoard(tk.Tk):
     def __init__(self) -> None:
@@ -88,19 +87,10 @@ class ChessBoard(tk.Tk):
             l1.place(anchor=tk.CENTER, relx = .8, rely = .5)
             l2.place(anchor=tk.CENTER, relx = .5, rely = .2)
         
+        #self.grid[0][0].bind('<Enter>', self.close)
 
-        fullimg = Image.open('resources/pieces2.png')
-        fullimg = fullimg.crop((0, 0, 334, 334))
-        fullimg = fullimg.resize((100, 100))
-        self.img = ImageTk.PhotoImage(fullimg)
-        color = (ttk.Style().lookup((self.grid[0][0])['style'], 'background'))
-        tk.Label(self.grid[0][0], bg = color, image=self.img, relief='flat', borderwidth=0).pack()
-        color = (ttk.Style().lookup((self.grid[1][0])['style'], 'background'))
-        tk.Label(self.grid[1][0], bg = color, image=self.img, relief='flat', borderwidth=0).pack()
-
-        
-
-        self.grid[0][0].bind('<Enter>', self.close)
+        for i, piece in enumerate(Pieces):
+            Piece_manager.place_piece(self.grid[i//8][i%8], piece)
 
         self.board['padding'] = 20
         self.board.grid()
