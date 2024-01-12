@@ -93,6 +93,8 @@ class ChessBoard(tk.Tk):
         for i, piece in enumerate(Pieces):
             Piece_manager.place_piece(self.grid[i // 8][i % 8], piece)
 
+        Piece_manager.place_piece(self.grid[0][0], Pieces.WPawn)
+
         self.board['padding'] = 20
         self.board.grid()
 

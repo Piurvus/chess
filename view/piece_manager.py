@@ -28,8 +28,8 @@ class Piece_manager:
 
         cls.pieces_pre = [fullimg for _ in Pieces]
         cls.pieces = {}
-        for i, piece in enumerate(Pieces):
-            s = len(Pieces) / 2
+        for i, _ in enumerate(Pieces):
+            s = len(Pieces) // 2
 
             crop_shape = (
                 334 * (i % s),
@@ -40,7 +40,6 @@ class Piece_manager:
 
             cls.pieces_pre[i] = fullimg.crop(crop_shape)
             cls.pieces_pre[i] = cls.pieces_pre[i].resize((100, 100))
-
 
 
     @classmethod
@@ -58,9 +57,15 @@ class Piece_manager:
     def place_piece(cls, frame, piece: Pieces) -> None:
         '''
         Given a frame and a piece, places the piece into the frame.
+        Old pieces in the frame are destroyed!
         '''
-        # Todo: cleanup, destroy frame children on placement
 
+        # clean up frame
+        for child in frame.winfo_children():
+            child.destroy()
+        assert(len(frame.winfo_children()) == 0)
+
+        # place new piece
         img = cls.get_img(piece)
 
         color = (ttk.Style().lookup((frame)['style'], 'background'))
