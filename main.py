@@ -1,12 +1,13 @@
 from view.chessboard import ChessBoard
 from model.board import Board
+from control.controller import Controller
 
 
 def main():
     board = Board()
-    print(board.bitboards)
-    view = ChessBoard()
-    view.mainloop()
+    view = ChessBoard(board)
+    controller = Controller(board, view)
+    controller.run()
 
 
 if __name__ == '__main__':

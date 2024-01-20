@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 from model.pieces import Pieces
 
 
+
 def static_init(cls):
     cls.init()
     return cls
@@ -54,7 +55,7 @@ class Piece_manager:
 
 
     @classmethod
-    def place_piece(cls, frame, piece: Pieces) -> None:
+    def place_piece(cls, frame: tk.Frame, piece: Pieces, callback) -> None:
         '''
         Given a frame and a piece, places the piece into the frame.
         Old pieces in the frame are destroyed!
@@ -69,6 +70,10 @@ class Piece_manager:
         img = cls.get_img(piece)
 
         color = (ttk.Style().lookup((frame)['style'], 'background'))
-        tk.Label(frame, bg=color, image=img, relief='flat', borderwidth=0).pack()
+        label = tk.Label(frame, bg=color, image=img, relief='flat', borderwidth=0)
+        label.pack()
+
+        label.bind("<Button-1>", callback)
+
 
     # staticmethod

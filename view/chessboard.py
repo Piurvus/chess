@@ -4,16 +4,25 @@ from tkinter import font as tkfont
 
 from view.piece_manager import Piece_manager
 from model.pieces import Pieces
+from model.board import Board
+
+from typing import Callable
+from functools import partial
 
 class ChessBoard(tk.Tk):
-    def __init__(self) -> None:
+
+
+    def __init__(self, model:Board) -> None:
         super().__init__()
         self.title("Chess")
         self.attributes('-type', 'dialog')
+        self.clickcalls = []
 
         self.initialize_styles()
         self.build_board()
         self.geometry("1000x1000")
+
+        self.model = model
 
     def initialize_styles(self):
         '''
@@ -88,17 +97,30 @@ class ChessBoard(tk.Tk):
             l1.place(anchor=tk.CENTER, relx=.8, rely=.5)
             l2.place(anchor=tk.CENTER, relx=.5, rely=.2)
 
-        # self.grid[0][0].bind('<Enter>', self.close)
-
-        for i, piece in enumerate(Pieces):
-            Piece_manager.place_piece(self.grid[i // 8][i % 8], piece)
-
-        Piece_manager.place_piece(self.grid[0][0], Pieces.WPawn)
 
         self.board['padding'] = 20
         self.board.grid()
 
+    def drawBoard(self) -> None:
+        for i, piece in enumerate(Pieces):
+            current_piece = self.model.bitboards[i]
 
+            for j, bit in enumerate(reversed(bin(current_piece)[2:])):
+                if int(bit) == 0:
+                    continue
+                Piece_manager.place_piece(self.grid[j // 8][j % 8], piece, self.clickcalls[j//8][j%8])
+
+    def placePiece(self, i: int, j: int, piece: Pieces) -> None:
+        Piece_manager.place_piece(self.grid[i][j], piece, self.clickcalls[i][j])
+
+    def bindClick(self, callback: Callable[[int, int, tk.Event], None]) -> None:
+        self.clickcalls = []
+        for i in range(8):
+            cs = []
+            for j in range(8):
+                cs.append(partial(callback, i, j))
+                self.grid[i][j].bind("<Button-1>", cs[j])
+            self.clickcalls.append(cs)
 
     def close(self, _: tk.Event) -> None:
         '''

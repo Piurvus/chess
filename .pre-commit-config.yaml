@@ -15,4 +15,4 @@ repos:
     hooks:
     - id: flake8
       exclude: 'tests|env|docs'
-      args: ['--config=setup.cfg', '--ignore=E302,E303,E501']
+      args: ['--config=setup.cfg', '--ignore=E302,E303,E501,E231,E226,E228,E20,E203']

@@ -3,10 +3,13 @@ from model.pieces import Pieces
 
 class Board:
 
-    bitboards = [0 for _ in range(12)]
+    bitboards = [0 for _ in range(len(Pieces))]
 
-    def __init__(self):
+    def __init__(self) -> None:
+        self.prepare()
 
+
+    def prepare(self) -> None:
         '''
         Creates one bitboard per piece.
         '''
@@ -31,4 +34,14 @@ class Board:
         self.bitboards[Pieces.WKnight.value] = 0x42
         self.bitboards[Pieces.BKnight.value] = 0x42 << 7 * 8
 
-        print(bin(0xff << 8 | 1 << 4 | 1 << 3 | 0x81 | 0x24 | 0x42))
+    def occupied(self, row:int, col:int) -> int:
+        '''
+        Checks if a given square is occupied or not.
+        If the square is occupied, returns -1 else returns
+        the number of the number of the piece.
+        '''
+        index = row*8 + col
+        for k, bits in enumerate(self.bitboards):
+            if (bits | (1 << index)) == bits:
+                return k
+        return -1
