@@ -75,5 +75,4 @@ class Piece_manager:
 
         label.bind("<Button-1>", callback)
 
-
     # staticmethod

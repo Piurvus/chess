@@ -31,15 +31,18 @@ class ChessBoard(tk.Tk):
 
         '''
         # Frame styles
-        style = ttk.Style()
-        style.configure(
+        self.style = ttk.Style()
+        self.style.configure(
             'white.TFrame',
             background='white',
+            backgroundhighlightcolor='green',
             boarderwidth=0,
             relief='flat',
         )
+        self.style.map('white.TFrame',
+          background=[('active', 'green'), ('!active', 'red')])
 
-        style.configure(
+        self.style.configure(
             'black.TFrame',
             background='grey',
             boarderwidth=0,
@@ -48,7 +51,7 @@ class ChessBoard(tk.Tk):
 
         # Label styles
         self.font = tkfont.Font(family='Arial', size=20, weight='bold')
-        style.configure(
+        self.style.configure(
             'board.TLabel',
             foreground='black',
             font=self.font,
@@ -113,7 +116,30 @@ class ChessBoard(tk.Tk):
     def placePiece(self, i: int, j: int, piece: Pieces) -> None:
         Piece_manager.place_piece(self.grid[i][j], piece, self.clickcalls[i][j])
 
+    def highlightSquare(self, i: int, j: int, active: bool) -> None:
+        '''
+        Changes the color of a specific square for highlighting.
+        '''
+
+            
+        # first set newstate of the frame
+        if active:
+            self.grid[i][j].state(['active'])
+        else:
+            self.grid[i][j].state(['!active'])
+
+        # make sure to propagate color changes to children
+        for child in self.grid[i][j].winfo_children():
+            child['bg'] = self.style.lookup(
+                    self.grid[i][j].cget('style'), 'background', state=['active' if active else '!active']
+                    )
+
+
+
     def bindClick(self, callback: Callable[[int, int, tk.Event], None]) -> None:
+        '''
+        Given some callback function, binds it to all squares.
+        '''
         self.clickcalls = []
         for i in range(8):
             cs = []

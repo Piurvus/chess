@@ -12,6 +12,8 @@ class Controller:
         self.view.bindClick(self.squareClick)
         self.view.drawBoard()
 
+        self.active = None
+
 
     def run(self) -> None:
         self.view.mainloop()
@@ -20,6 +22,14 @@ class Controller:
 
 
     def squareClick(self, row: int, col: int, event=None) -> None:
-        print('yep works', row, col)
 
-        self.view.placePiece(row, col, Pieces.BKing)
+        print('yep works', row, col, event)
+
+        #self.view.placePiece(row, col, Pieces.BKing)
+
+        if self.active == (row, col):
+            self.view.highlightSquare(row, col, False)
+            self.active = None
+        elif self.active is None:
+            self.view.highlightSquare(row, col, True)
+            self.active = (row, col)
