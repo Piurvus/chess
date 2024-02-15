@@ -1,4 +1,5 @@
 from model.pieces import Pieces
+from model.pieces import get_moves
 
 
 class Board:
@@ -34,14 +35,35 @@ class Board:
         self.bitboards[Pieces.WKnight.value] = 0x42
         self.bitboards[Pieces.BKnight.value] = 0x42 << 7 * 8
 
-    def occupied(self, row:int, col:int) -> int:
+    def occupied(self, row:int, col:int) -> Pieces:
         '''
         Checks if a given square is occupied or not.
-        If the square is occupied, returns -1 else returns
-        the number of the number of the piece.
+        If the square is occupied, returns Pieces.Invalid else returns
+        the piece.
         '''
         index = row*8 + col
         for k, bits in enumerate(self.bitboards):
             if (bits | (1 << index)) == bits:
-                return k
-        return -1
+                return Pieces.getPiece(k)
+        return Pieces.getPiece(-1)
+
+    def getMoves(self, row:int, col:int) -> int:
+        '''
+        Given a square, this function returns all possible moves 
+        for the piece on the given square as an integer.
+        '''
+
+        piece = self.occupied(row, col)
+        index = row*8 + col
+
+        white = 0
+        black = 0
+        for k, bits in enumerate(self.bitboards):
+            if k < len(Pieces)//2:
+                white |= bits
+            else:
+                black |= bits
+
+        return get_moves(piece, index, white, black) 
+        
+        

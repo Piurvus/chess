@@ -1,6 +1,6 @@
 from model.board import Board
 from view.chessboard import ChessBoard
-from model.pieces import Pieces
+
 
 
 class Controller:
@@ -23,13 +23,15 @@ class Controller:
 
     def squareClick(self, row: int, col: int, event=None) -> None:
 
-        print('yep works', row, col, event)
-
-        #self.view.placePiece(row, col, Pieces.BKing)
+        piece = self.board.occupied(row, col)
 
         if self.active == (row, col):
             self.view.highlightSquare(row, col, False)
             self.active = None
-        elif self.active is None:
+
+        elif self.active is None and piece.value != -1:
             self.view.highlightSquare(row, col, True)
             self.active = (row, col)
+
+            print(self.board.getMoves(row, col))
+            
